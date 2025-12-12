@@ -27,7 +27,6 @@ public class EtatDefilement implements MinuterieState {
 
         if (!app.isZero()) {
 
-            // On décrémente les secondes
             s.tick();
 
             if (s.getValeur() < 0) {

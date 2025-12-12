@@ -29,33 +29,21 @@ public class ChronometreApp {
 
     private ChronoState currentState;
 
-    // ---------------------------------------------------------
-    // CONSTRUCTEUR : crée l'interface + met l'état initial
-    // ---------------------------------------------------------
     public ChronometreApp() {
         creerInterface();
         creerEvenements();
         changeState(new EtatInitialChrono(this));
     }
 
-    // ---------------------------------------------------------
-    // Accès pour TimerApp
-    // ---------------------------------------------------------
     public Pane getView() {
         return root;
     }
 
-    // ---------------------------------------------------------
-    // STATE PATTERN
-    // ---------------------------------------------------------
     public void changeState(ChronoState newState) {
         currentState = newState;
         newState.enter();
     }
 
-    // ---------------------------------------------------------
-    // INTERFACE
-    // ---------------------------------------------------------
     private void creerInterface() {
 
         affichage = new Label("00:00:00");
@@ -74,9 +62,6 @@ public class ChronometreApp {
         root.setStyle("-fx-padding: 20;");
     }
 
-    // ---------------------------------------------------------
-    // ÉVÉNEMENTS BOUTONS
-    // ---------------------------------------------------------
     private void creerEvenements() {
 
         startBtn.setOnAction(e -> changeState(new EtatChrono(this)));
@@ -88,9 +73,6 @@ public class ChronometreApp {
         intervalBtn.setOnAction(e -> ajouterIntervalle());
     }
 
-    // ---------------------------------------------------------
-    // LOGIQUE DU CHRONOMÈTRE
-    // ---------------------------------------------------------
     public void resetCompteurs() {
         minutes  = new Compteur(0, new VariationIllimitee(0, new Increment()));
         secondes = new CompteurCompose(0, 59, minutes);
@@ -133,9 +115,6 @@ public class ChronometreApp {
         resetBtn.setVisible(reset);
     }
 
-    // ---------------------------------------------------------
-    // GETTERS
-    // ---------------------------------------------------------
     public Compteur getMinutes()   { return minutes; }
     public CompteurCompose getSecondes() { return secondes; }
     public CompteurCompose getCentiemes() { return centiemes; }

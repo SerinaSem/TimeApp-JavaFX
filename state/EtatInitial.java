@@ -17,13 +17,11 @@ public class EtatInitial implements MinuterieState {
 
         app.showButtons(true, false, false, false);
 
-        // Reset de l’affichage
         app.setCompteurs(null, null, null);
         app.updateAffichage();
     }
 
     @Override
     public void tick() {
-        // Rien ici
     }
 }

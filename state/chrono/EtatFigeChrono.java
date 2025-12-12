@@ -18,6 +18,5 @@ public class EtatFigeChrono implements ChronoState {
 
     @Override
     public void tick() {
-        // rien
     }
 }

@@ -15,10 +15,9 @@ public class TimerApp extends Application {
 	private BorderPane root;
 	private BorderPane zoneAffichage;
 
-	// 🔗 MODELE DE TEMPS PARTAGÉ
 	private TempsModel tempsModel;
 
-	// VUES (instanciées UNE SEULE FOIS)
+	// VUES
 	private HorlogeApp horloge;
 	private HorlogeGraphiqueApp horlogeGraphique;
 	private ReveilApp reveil;
@@ -28,26 +27,21 @@ public class TimerApp extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		// --- Layout principal ---
 		root = new BorderPane();
 		zoneAffichage = new BorderPane();
 		root.setCenter(zoneAffichage);
 
-		// --- Modèle partagé ---
 		tempsModel = new TempsModel();
 
-		// --- Création des vues ---
 		horloge = new HorlogeApp(tempsModel);
 		horlogeGraphique = new HorlogeGraphiqueApp(tempsModel);
 		reveil = new ReveilApp(tempsModel);
 		minuterie = new MinuterieApp();
 		chronometre = new ChronometreApp();
 
-		// --- Menu ---
 		MenuBar menuBar = creerMenu();
 		root.setTop(menuBar);
 
-		// Vue par défaut
 		zoneAffichage.setCenter(horloge.getView());
 
 		Scene scene = new Scene(root, 700, 500);
@@ -56,9 +50,7 @@ public class TimerApp extends Application {
 		stage.show();
 	}
 
-	// -------------------------------------------------------
 	// MENU
-	// -------------------------------------------------------
 	private MenuBar creerMenu() {
 
 		Menu menu = new Menu("Fonctions");

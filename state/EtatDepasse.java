@@ -20,7 +20,6 @@ public class EtatDepasse implements MinuterieState {
         app.setBackgroundRed();
         app.showButtons(false, false, false, true);
 
-        // Repart en comptant vers le haut
         Compteur heures = new Compteur(0, new VariationIllimitee(0, new Increment()));
         Compteur minutes = new Compteur(0, new VariationIllimitee(0, new Increment()));
         Compteur secondes = new Compteur(0, new VariationIllimitee(0, new Increment()));
@@ -44,7 +43,6 @@ public class EtatDepasse implements MinuterieState {
             if (m.getValeur() >= 60) {
                 m.setValeur(0);
                 h.tick();
-                // tu peux limiter à 24h ici si tu veux
             }
         }
 

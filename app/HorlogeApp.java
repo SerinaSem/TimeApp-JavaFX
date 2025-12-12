@@ -25,9 +25,6 @@ public class HorlogeApp {
     private VBox root;
     private Timeline timeline;
 
-    // -------------------------------------------------------
-    // CONSTRUCTEUR
-    // -------------------------------------------------------
     public HorlogeApp(TempsModel temps) {
         this.temps = temps;
 
@@ -36,12 +33,10 @@ public class HorlogeApp {
         startTicks(temps.secondes, 1000);
     }
 
-    // -------------------------------------------------------
     public VBox getView() {
         return root;
     }
 
-    // -------------------------------------------------------
     private VBox creerInterface() {
 
         labelDate = new Label();
@@ -77,7 +72,6 @@ public class HorlogeApp {
         return pane;
     }
 
-    // -------------------------------------------------------
     private void bindModelView() {
         labelDate.setText(temps.getDateFormatee());
 
@@ -86,7 +80,6 @@ public class HorlogeApp {
         labelS.textProperty().bind(temps.secondes.valeurProperty().asString(":%02d"));
     }
 
-    // -------------------------------------------------------
     private void startTicks(Compteur secondes, int periode) {
         timeline = new Timeline(
                 new KeyFrame(Duration.millis(periode), e -> secondes.tick())

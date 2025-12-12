@@ -22,6 +22,5 @@ public class EtatInitialChrono implements ChronoState {
 
     @Override
     public void tick() {
-        // rien
     }
 }

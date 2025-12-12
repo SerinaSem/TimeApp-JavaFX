@@ -26,7 +26,6 @@ public class HorlogeGraphiqueApp {
     private static final double CX = 200;
     private static final double CY = 200;
 
-    // -------------------------------------------------------
     public HorlogeGraphiqueApp(TempsModel temps) {
         this.temps = temps;
 
@@ -34,29 +33,24 @@ public class HorlogeGraphiqueApp {
         bindModelView();
     }
 
-    // -------------------------------------------------------
     public Pane getView() {
         return root;
     }
 
-    // -------------------------------------------------------
     private Pane creerInterface() {
 
         Pane pane = new Pane();
 
-        // ---- Date ----
         Label labelDate = new Label(temps.getDateFormatee());
         labelDate.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         labelDate.setLayoutX(90);
         labelDate.setLayoutY(20);
 
-        // ---- Cadran ----
         Circle cercle = new Circle(CX, CY, 150);
         cercle.setStroke(Color.BLACK);
         cercle.setFill(Color.TRANSPARENT);
         cercle.setStrokeWidth(4);
 
-        // ---- Aiguilles ----
         aigSeconde = new Line(CX, CY, CX, CY - 100);
         aigSeconde.setStrokeWidth(1);
 
@@ -74,7 +68,6 @@ public class HorlogeGraphiqueApp {
         aigMinute.getTransforms().add(rotMinute);
         aigHeure.getTransforms().add(rotHeure);
 
-        // ---- Numéros ----
         double rNum = 120;
         for (int i = 1; i <= 12; i++) {
             double angle = Math.toRadians(i * 30 - 90);
@@ -89,7 +82,6 @@ public class HorlogeGraphiqueApp {
             pane.getChildren().add(num);
         }
 
-        // ---- Graduations ----
         double rOuter = 150;
         double rInner = 140;
         double rHour  = 130;
@@ -112,7 +104,6 @@ public class HorlogeGraphiqueApp {
         return pane;
     }
 
-    // -------------------------------------------------------
     private void bindModelView() {
 
         temps.secondes.valeurProperty().addListener((obs, o, n) ->
@@ -124,7 +115,6 @@ public class HorlogeGraphiqueApp {
         temps.heures.valeurProperty().addListener((obs, o, n) ->
                 rotHeure.setAngle((n.intValue() % 12) * 30));
 
-        // Initialisation
         rotSeconde.setAngle(temps.secondes.getValeur() * 6);
         rotMinute.setAngle(temps.minutes.getValeur() * 6);
         rotHeure.setAngle((temps.heures.getValeur() % 12) * 30);

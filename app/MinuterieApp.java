@@ -16,7 +16,6 @@ import state.*;
 
 public class MinuterieApp {
 
-    // UI
     private VBox root;
     private Label affichage;
 
@@ -29,45 +28,28 @@ public class MinuterieApp {
     private Button boutonResume;
     private Button boutonReset;
 
-    // Compteurs
     private Compteur heures;
     private Compteur minutes;
     private Compteur secondes;
 
-    // Timer
     private Timeline timeline;
 
-    // State pattern
     private MinuterieState currentState;
 
-    // ------------------------------------------------------------
-    //  CONSTRUCTEUR
-    // ------------------------------------------------------------
     public MinuterieApp() {
         creerInterface();
         creerEvenements();
         changeState(new EtatInitial(this));
     }
 
-    // ------------------------------------------------------------
-    // ACCÈS POUR TIMEAPP
-    // ------------------------------------------------------------
     public VBox getView() {
         return root;
     }
-
-    // ------------------------------------------------------------
-    // STATE
-    // ------------------------------------------------------------
 
     public void changeState(MinuterieState newState) {
         currentState = newState;
         newState.enter();
     }
-
-    // ------------------------------------------------------------
-    // INTERFACE
-    // ------------------------------------------------------------
 
     private void creerInterface() {
 
@@ -95,10 +77,6 @@ public class MinuterieApp {
         root.setStyle("-fx-padding: 20;");
     }
 
-    // ------------------------------------------------------------
-    // ÉVÉNEMENTS
-    // ------------------------------------------------------------
-
     private void creerEvenements() {
 
         boutonStart.setOnAction(e -> {
@@ -123,10 +101,6 @@ public class MinuterieApp {
         boutonReset.setOnAction(e -> changeState(new EtatInitial(this)));
     }
 
-    // ------------------------------------------------------------
-    // TIMER
-    // ------------------------------------------------------------
-
     public void startTimer() {
         stopTimer();
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> currentState.tick()));
@@ -139,10 +113,6 @@ public class MinuterieApp {
             timeline.stop();
     }
 
-    // ------------------------------------------------------------
-    // COULEURS
-    // ------------------------------------------------------------
-
     public void setBackgroundWhite() {
         root.setStyle("-fx-background-color: white; -fx-padding: 20;");
     }
@@ -150,10 +120,6 @@ public class MinuterieApp {
     public void setBackgroundRed() {
         root.setStyle("-fx-background-color: red; -fx-padding: 20;");
     }
-
-    // ------------------------------------------------------------
-    // AFFICHAGE
-    // ------------------------------------------------------------
 
     public void updateAffichage() {
         if (heures == null || minutes == null || secondes == null) {
@@ -170,20 +136,12 @@ public class MinuterieApp {
                 secondes.getValeur());
     }
 
-    // ------------------------------------------------------------
-    // BOUTONS
-    // ------------------------------------------------------------
-
     public void showButtons(boolean start, boolean pause, boolean resume, boolean reset) {
         boutonStart.setVisible(start);
         boutonPause.setVisible(pause);
         boutonResume.setVisible(resume);
         boutonReset.setVisible(reset);
     }
-
-    // ------------------------------------------------------------
-    // OUTILS
-    // ------------------------------------------------------------
 
     public boolean isZero() {
         return heures.getValeur() == 0 &&
@@ -196,10 +154,6 @@ public class MinuterieApp {
         minutes  = m;
         secondes = s;
     }
-
-    // ------------------------------------------------------------
-    // GETTERS
-    // ------------------------------------------------------------
 
     public Compteur getHeures()   { return heures; }
     public Compteur getMinutes()  { return minutes; }

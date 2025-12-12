@@ -23,9 +23,6 @@ public class ReveilApp {
     private VBox root;
     private Timeline timeline;
 
-    // -------------------------------------------------------
-    // CONSTRUCTEUR
-    // -------------------------------------------------------
     public ReveilApp(TempsModel temps) {
         this.temps = temps;
 
@@ -34,16 +31,10 @@ public class ReveilApp {
         startDetection();
     }
 
-    // -------------------------------------------------------
-    // ACCÈS POUR TimerApp
-    // -------------------------------------------------------
     public VBox getView() {
         return root;
     }
 
-    // -------------------------------------------------------
-    // INTERFACE
-    // -------------------------------------------------------
     private VBox creerInterface() {
 
         labelH = new Label();
@@ -86,18 +77,12 @@ public class ReveilApp {
         return pane;
     }
 
-    // -------------------------------------------------------
-    // BINDINGS
-    // -------------------------------------------------------
     private void bindModelView() {
         labelH.textProperty().bind(temps.heures.valeurProperty().asString("%02d :"));
         labelM.textProperty().bind(temps.minutes.valeurProperty().asString("%02d :"));
         labelS.textProperty().bind(temps.secondes.valeurProperty().asString("%02d"));
     }
 
-    // -------------------------------------------------------
-    // DÉTECTION DU RÉVEIL
-    // -------------------------------------------------------
     private void startDetection() {
 
         timeline = new Timeline(

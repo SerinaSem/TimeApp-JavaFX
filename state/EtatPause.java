@@ -19,6 +19,5 @@ public class EtatPause implements MinuterieState {
 
     @Override
     public void tick() {
-        // Rien en pause
     }
 }
