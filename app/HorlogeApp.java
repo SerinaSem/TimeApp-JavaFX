@@ -6,15 +6,15 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 
+import model.TempsModel;
 import model.compteur.Compteur;
-import model.compteur.CompteurCompose;
 
 public class HorlogeApp {
 
-    private Compteur heures;
-    private CompteurCompose minutes;
-    private CompteurCompose secondes;
+    // 🔗 MODELE PARTAGÉ
+    private final TempsModel temps;
 
+    // UI
     private Label labelH;
     private Label labelM;
     private Label labelS;
@@ -24,35 +24,29 @@ public class HorlogeApp {
     private TextField inputS;
 
     private VBox root;
-
     private Timeline timeline;
 
     // -------------------------------------------------------
-    // CONSTRUCTEUR : prépare tout
+    // CONSTRUCTEUR : reçoit le modèle partagé
     // -------------------------------------------------------
-    public HorlogeApp() {
-        creerCompteurs();
+    public HorlogeApp(TempsModel temps) {
+        this.temps = temps;
+
         root = creerInterface();
         bindModelView();
-        startTicks(secondes, 1000);
+        startTicks(temps.secondes, 1000);
     }
 
     // -------------------------------------------------------
-    // ACCÈS POUR TimeApp
+    // ACCÈS POUR TimerApp
     // -------------------------------------------------------
     public VBox getView() {
         return root;
     }
 
     // -------------------------------------------------------
-    // LOGIQUE DE L'HORLOGE
+    // INTERFACE
     // -------------------------------------------------------
-    private void creerCompteurs() {
-        heures = new Compteur(0, 24);
-        minutes = new CompteurCompose(0, 60, heures);
-        secondes = new CompteurCompose(0, 60, minutes);
-    }
-
     private VBox creerInterface() {
 
         labelH = new Label();
@@ -65,11 +59,15 @@ public class HorlogeApp {
         inputM = new TextField("0");
         inputS = new TextField("0");
 
+        inputH.setPrefWidth(50);
+        inputM.setPrefWidth(50);
+        inputS.setPrefWidth(50);
+
         Button setButton = new Button("SET");
         setButton.setOnAction(e -> {
-            heures.setValeur(Integer.parseInt(inputH.getText()));
-            minutes.setValeur(Integer.parseInt(inputM.getText()));
-            secondes.setValeur(Integer.parseInt(inputS.getText()));
+            temps.heures.setValeur(Integer.parseInt(inputH.getText()));
+            temps.minutes.setValeur(Integer.parseInt(inputM.getText()));
+            temps.secondes.setValeur(Integer.parseInt(inputS.getText()));
         });
 
         HBox reglages = new HBox(10, inputH, inputM, inputS, setButton);
@@ -80,15 +78,21 @@ public class HorlogeApp {
         return pane;
     }
 
+    // -------------------------------------------------------
+    // BINDINGS
+    // -------------------------------------------------------
     private void bindModelView() {
-        labelH.textProperty().bind(heures.valeurProperty().asString("%02d"));
-        labelM.textProperty().bind(minutes.valeurProperty().asString(":%02d"));
-        labelS.textProperty().bind(secondes.valeurProperty().asString(":%02d"));
+        labelH.textProperty().bind(temps.heures.valeurProperty().asString("%02d"));
+        labelM.textProperty().bind(temps.minutes.valeurProperty().asString(":%02d"));
+        labelS.textProperty().bind(temps.secondes.valeurProperty().asString(":%02d"));
     }
 
-    private void startTicks(Compteur c, int periode) {
+    // -------------------------------------------------------
+    // TIMER
+    // -------------------------------------------------------
+    private void startTicks(Compteur secondes, int periode) {
         timeline = new Timeline(
-                new KeyFrame(Duration.millis(periode), e -> c.tick())
+                new KeyFrame(Duration.millis(periode), e -> secondes.tick())
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();

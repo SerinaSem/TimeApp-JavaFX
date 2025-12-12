@@ -1,24 +1,19 @@
 package app;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.control.Label;
 import javafx.scene.transform.Rotate;
-import javafx.util.Duration;
 
-import model.compteur.Compteur;
-import model.compteur.CompteurCompose;
+import model.TempsModel;
 
 public class HorlogeGraphiqueApp {
 
-    private Compteur heures;
-    private CompteurCompose minutes;
-    private CompteurCompose secondes;
+    private final TempsModel temps;
+
+    private Pane root;
 
     private Line aigHeure;
     private Line aigMinute;
@@ -28,36 +23,20 @@ public class HorlogeGraphiqueApp {
     private Rotate rotMinute;
     private Rotate rotSeconde;
 
-    private Pane root;
+    private static final double CX = 200;
+    private static final double CY = 200;
 
-    // Centre du cadran
-    private final double CX = 200;
-    private final double CY = 200;
+    public HorlogeGraphiqueApp(TempsModel temps) {
+        this.temps = temps;
 
-    // -------------------------------------------------------
-    // CONSTRUCTEUR : prépare l'interface et le timer
-    // -------------------------------------------------------
-    public HorlogeGraphiqueApp() {
-        creerCompteurs();
         root = creerInterface();
         bindModelView();
-        startTicks(secondes, 1000);
+
+        // ❌ PAS de timer ici : l'horloge graphique observe seulement le modèle
     }
 
-    // -------------------------------------------------------
-    // ACCÈS POUR TimeApp
-    // -------------------------------------------------------
     public Pane getView() {
         return root;
-    }
-
-    // -------------------------------------------------------
-    // LOGIQUE
-    // -------------------------------------------------------
-    private void creerCompteurs() {
-        heures = new Compteur(0, 24);
-        minutes = new CompteurCompose(0, 60, heures);
-        secondes = new CompteurCompose(0, 60, minutes);
     }
 
     private Pane creerInterface() {
@@ -69,7 +48,6 @@ public class HorlogeGraphiqueApp {
         cercle.setFill(Color.TRANSPARENT);
         cercle.setStrokeWidth(4);
 
-        // Aiguilles
         aigSeconde = new Line(CX, CY, CX, CY - 100);
         aigSeconde.setStrokeWidth(1);
 
@@ -79,7 +57,6 @@ public class HorlogeGraphiqueApp {
         aigHeure = new Line(CX, CY, CX, CY - 60);
         aigHeure.setStrokeWidth(4);
 
-        // Rotations
         rotSeconde = new Rotate(0, CX, CY);
         rotMinute = new Rotate(0, CX, CY);
         rotHeure = new Rotate(0, CX, CY);
@@ -88,9 +65,8 @@ public class HorlogeGraphiqueApp {
         aigMinute.getTransforms().add(rotMinute);
         aigHeure.getTransforms().add(rotHeure);
 
-        // --- Numéros 1 à 12 ---
+        // Numéros
         double rNum = 120;
-
         for (int i = 1; i <= 12; i++) {
             double angle = Math.toRadians(i * 30 - 90);
             double x = CX + rNum * Math.cos(angle);
@@ -104,27 +80,18 @@ public class HorlogeGraphiqueApp {
             pane.getChildren().add(num);
         }
 
-        // ---- Graduations (ticks) ----
-        double rTickOuter = 150;
-        double rTickInner = 140;
-        double rTickHour = 130;
+        // Graduations
+        double rOuter = 150;
+        double rInner = 140;
+        double rHour  = 130;
 
         for (int i = 0; i < 60; i++) {
-
             double angle = Math.toRadians(i * 6 - 90);
 
-            double x1, y1;
-
-            if (i % 5 == 0) {
-                x1 = CX + rTickHour * Math.cos(angle);
-                y1 = CY + rTickHour * Math.sin(angle);
-            } else {
-                x1 = CX + rTickInner * Math.cos(angle);
-                y1 = CY + rTickInner * Math.sin(angle);
-            }
-
-            double x2 = CX + rTickOuter * Math.cos(angle);
-            double y2 = CY + rTickOuter * Math.sin(angle);
+            double x1 = CX + (i % 5 == 0 ? rHour : rInner) * Math.cos(angle);
+            double y1 = CY + (i % 5 == 0 ? rHour : rInner) * Math.sin(angle);
+            double x2 = CX + rOuter * Math.cos(angle);
+            double y2 = CY + rOuter * Math.sin(angle);
 
             Line tick = new Line(x1, y1, x2, y2);
             tick.setStrokeWidth(i % 5 == 0 ? 3 : 1);
@@ -133,38 +100,23 @@ public class HorlogeGraphiqueApp {
         }
 
         pane.getChildren().addAll(cercle, aigHeure, aigMinute, aigSeconde);
-
         return pane;
     }
 
     private void bindModelView() {
 
-        // SECONDES
-        secondes.valeurProperty().addListener((obs, oldV, newV) -> {
-            rotSeconde.setAngle(newV.intValue() * 6);
-        });
+        temps.secondes.valeurProperty().addListener((obs, o, n) ->
+                rotSeconde.setAngle(n.intValue() * 6));
 
-        // MINUTES
-        minutes.valeurProperty().addListener((obs, oldV, newV) -> {
-            rotMinute.setAngle(newV.intValue() * 6);
-        });
+        temps.minutes.valeurProperty().addListener((obs, o, n) ->
+                rotMinute.setAngle(n.intValue() * 6));
 
-        // HEURES
-        heures.valeurProperty().addListener((obs, oldV, newV) -> {
-            rotHeure.setAngle(newV.intValue() * 30);
-        });
+        temps.heures.valeurProperty().addListener((obs, o, n) ->
+                rotHeure.setAngle((n.intValue() % 12) * 30));
 
-        // Valeurs initiales
-        rotSeconde.setAngle(secondes.getValeur() * 6);
-        rotMinute.setAngle(minutes.getValeur() * 6);
-        rotHeure.setAngle(heures.getValeur() * 30);
-    }
-
-    private void startTicks(Compteur secondes, int periode) {
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(periode), e -> secondes.tick())
-        );
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        // Initialisation
+        rotSeconde.setAngle(temps.secondes.getValeur() * 6);
+        rotMinute.setAngle(temps.minutes.getValeur() * 6);
+        rotHeure.setAngle((temps.heures.getValeur() % 12) * 30);
     }
 }

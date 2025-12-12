@@ -39,7 +39,7 @@ public class ChronometreApp {
     }
 
     // ---------------------------------------------------------
-    // Accès pour TimeApp
+    // Accès pour TimerApp
     // ---------------------------------------------------------
     public Pane getView() {
         return root;
